@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { NavBar } from '@/components/UI/navBar';
+import { Toaster } from 'sonner';
+import { ContextProvider } from '@/context';
 
 const inter = Inter({ subsets: ['latin'] });
 const title = 'Livestock Information System';
@@ -16,8 +18,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	return (
 		<html lang='en'>
 			<body className={`${inter.className} bg-black text-white font-normal w-full h-screen overflow-hidden text-sm flex-col flex font-sans`}>
-				<NavBar />
-				{children}
+				<ContextProvider>
+					<NavBar />
+					{children}
+				</ContextProvider>
+				<Toaster
+					richColors
+					position='bottom-left'
+					duration={4000}
+					closeButton
+					theme={'light'}
+				/>
 			</body>
 		</html>
 	);

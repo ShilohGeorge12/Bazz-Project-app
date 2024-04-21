@@ -1,19 +1,24 @@
 'use client';
 
-import { PASSWORD_FORMAT_MESSAGE, PASSWORD_REGEX, USERNAME_REGEX } from '@/types';
+import { useGlobals } from '@/context';
+import { PASSWORD_FORMAT_MESSAGE, PASSWORD_REGEX, USERNAME_REGEX, isMessage, isResError, isUser, responseTypes } from '@/types';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import { MouseEvent } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
+import { toast } from 'sonner';
 
-interface formProps {}
+interface formProps {
+	type: 'login' | 'signup';
+}
 
-export function Form({}: formProps) {
+export function Form({ type }: formProps) {
 	const initState = {
 		username: '',
 		password: '',
 	};
 	const { push } = useRouter();
+	const { dispatch } = useGlobals();
 	const [viewPasword, setViewPasword] = useState<boolean>(false);
 	const [errorMessage, setErrorMessage] = useState<string[]>([]);
 	const [status, setStatus] = useState<'fetching' | 'idle'>('idle');
@@ -54,22 +59,64 @@ export function Form({}: formProps) {
 			hasError = true;
 		}
 
-		// const promise = async () => {
-		// 	const body = {
-		// 		username: details.username.trim(),
-		// 		password: details.password.trim(),
-		// 		// email: details.email.trim(),
-		// 	};
+		if (hasError) return;
+		setStatus('fetching');
 
-		// 	const req = await fetch('/api/login', {
-		// 		method: 'POST',
-		// 		body: JSON.stringify(body),
-		// 	});
-		// 	const res = (await req.json()) as unknown as responseTypes;
-		// 	return res;
-		// };
+		const formData = new FormData();
+		if (type === 'signup') {
+			const body = {
+				username: details.username.trim(),
+				password: details.password.trim(),
+			};
+			Object.entries(body).forEach(([key, val]) => formData.append(key, val));
+			const req = await fetch('/api/user', {
+				method: 'POST',
+				body: formData,
+			});
 
-		push('/results');
+			const res = (await req.json()) as unknown as responseTypes;
+
+			if (isResError(res)) {
+				const error = typeof res.error === 'string' ? res.error : res.error.join(' ');
+				toast.error(error);
+				setStatus('idle');
+				return;
+			}
+
+			if (isMessage(res)) {
+				toast.info(res.message);
+				setStatus('idle');
+				push('/');
+			}
+			toast.info('heelo');
+		}
+
+		if (type === 'login') {
+			const body = {
+				username: details.username.trim(),
+				password: details.password.trim(),
+			};
+			Object.entries(body).forEach(([key, val]) => formData.append(key, val));
+			const req = await fetch('/api/login', {
+				method: 'POST',
+				body: formData,
+			});
+
+			const res = (await req.json()) as unknown as responseTypes;
+
+			if (isResError(res)) {
+				const error = typeof res.error === 'string' ? res.error : res.error.join(' ');
+				toast.error(error);
+				setStatus('idle');
+				return;
+			}
+
+			if (isUser(res)) {
+				setStatus('idle');
+				dispatch({ type: 'logIn', payload: { isloggedIn: true, user: res } });
+				push('/results');
+			}
+		}
 	};
 
 	return (
@@ -80,6 +127,7 @@ export function Form({}: formProps) {
 					name='username'
 					placeholder='Username'
 					onChange={onChange}
+					disabled={status === 'fetching' ? true : false}
 					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 placeholder-gray-400 tracking-wider font-medium h-full w-[70%]'
 				/>
 			</div>
@@ -89,6 +137,7 @@ export function Form({}: formProps) {
 					name='password'
 					placeholder='Password'
 					onChange={onChange}
+					disabled={status === 'fetching' ? true : false}
 					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 pr-6 placeholder-gray-400 tracking-wider font-medium h-full w-[70%]'
 				/>
 				<button
@@ -103,9 +152,15 @@ export function Form({}: formProps) {
 				<button
 					type='button'
 					name={``}
-					className={`w-[70%] h-full transition-all duration-500 ease-in-out hover:scale-105 text-xl font-medium  bg-white text-black rounded-xl tracking-wider`}
-					onClick={onSubmit}>
-					Submit
+					className={`w-[70%] flex items-center justify-center h-full transition-all duration-500 ease-in-out hover:scale-105 text-xl font-medium  bg-white text-black rounded-xl tracking-wider disabled:bg-white/85`}
+					onClick={onSubmit}
+					disabled={status === 'fetching' ? true : false}>
+					{status === 'idle' && 'Submit'}
+					{status === 'fetching' && (
+						<span className='animate-rotate'>
+							<FaSpinner />
+						</span>
+					)}
 				</button>
 			</div>
 
