@@ -128,7 +128,7 @@ export function Form({ type }: formProps) {
 					placeholder='Username'
 					onChange={onChange}
 					disabled={status === 'fetching' ? true : false}
-					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 placeholder-gray-400 tracking-wider font-medium h-full w-[70%]'
+					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 placeholder-gray-400 tracking-wider font-medium h-full md:w-[70%] w-[90%]'
 				/>
 			</div>
 			<div className='w-full h-10 flex items-center justify-center'>
@@ -138,7 +138,7 @@ export function Form({ type }: formProps) {
 					placeholder='Password'
 					onChange={onChange}
 					disabled={status === 'fetching' ? true : false}
-					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 pr-6 placeholder-gray-400 tracking-wider font-medium h-full w-[70%]'
+					className='border-b focus:border-white transition-all duration-500 ease-in-out focus:border-b-2 outline-0 border-gray-400 bg-transparent p-2 pr-6 placeholder-gray-400 tracking-wider font-medium h-full md:w-[70%] w-[90%]'
 				/>
 				<button
 					type='button'
@@ -152,7 +152,7 @@ export function Form({ type }: formProps) {
 				<button
 					type='button'
 					name={``}
-					className={`w-[70%] flex items-center justify-center h-full transition-all duration-500 ease-in-out hover:scale-105 text-xl font-medium  bg-white text-black rounded-xl tracking-wider disabled:bg-white/85`}
+					className={`md:w-[70%] w-[90%] flex items-center justify-center h-full transition-all duration-500 ease-in-out hover:scale-105 text-xl font-medium bg-white text-black rounded-xl tracking-wider disabled:bg-white/85`}
 					onClick={onSubmit}
 					disabled={status === 'fetching' ? true : false}>
 					{status === 'idle' && 'Submit'}

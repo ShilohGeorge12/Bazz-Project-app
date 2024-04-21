@@ -1,13 +1,14 @@
 'use client';
 
 import { UrlPath } from '@/types';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { AuthButton, NavButton } from '../../button';
 import { useGlobals } from '@/context';
-import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export function ClientNav() {
 	const pathname = usePathname();
+	const { push } = useRouter();
 	const {
 		state: { isloggedIn },
 	} = useGlobals();
@@ -21,13 +22,18 @@ export function ClientNav() {
 
 	const onSignUp = async () => {};
 
-	console.log(`log in: ${isloggedIn}`);
+	useEffect(() => {
+		if (!isloggedIn && pathname === '/results') {
+			push('/');
+		}
+	}, []);
+
 	return (
 		<section className='flex items-center gap-8'>
 			{!isloggedIn && (
 				<AuthButton
 					name='Sign Up'
-					onClick={onSignUp}
+					onClick={() => push('/signup')}
 				/>
 			)}
 			{isloggedIn && (

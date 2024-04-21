@@ -12,7 +12,9 @@ export function NavButton({ href, more, name, lg }: { lg?: true } & Omit<buttonP
 		<Link
 			href={href}
 			title={name}
-			className={`${lg ? 'w-24' : 'w-16'} h-11 group transition-all duration-500 ease-in-out border-0 ${more} flex flex-col items-center justify-center gap-y-0.5`}>
+			className={`${
+				lg ? 'md:w-24 w-20' : 'md:w-16 w-14'
+			} h-8 md:h-11 group transition-all duration-500 ease-in-out border-0 ${more} flex flex-col items-center justify-center gap-y-0.5`}>
 			{name}
 			<span className='w-[70%] h-[2px] group-hover:flex hidden bg-white' />
 		</Link>
