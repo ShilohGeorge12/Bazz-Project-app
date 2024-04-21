@@ -7,12 +7,12 @@ import { AuthButton, NavButton } from '../../button';
 export function ClientNav() {
 	const pathname = usePathname();
 	const isPath = (path: UrlPath) => {
-		if (pathname === path || pathname.includes(path)) {
+		if (pathname === path) {
 			return 'bg-white text-black rounded-lg';
 		}
 		return '';
 	};
-	const isLoggedIn: boolean = false;
+	const isLoggedIn: boolean = true;
 	const onSignUp = async () => {};
 
 	return (
